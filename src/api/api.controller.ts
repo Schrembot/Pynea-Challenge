@@ -12,36 +12,48 @@ import {
 } from '@nestjs/common';
 import { UsersService } from '../modules/users/users.service';
 import { HttpExceptionFilter } from '../http-exception.filter';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiExcludeEndpoint,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiCreatedResponse,
+  ApiNotFoundResponse,
+} from '@nestjs/swagger';
+import { CreateUserDto } from '../modules/users/dto/create-user.dto';
+import { UpdateUserDto } from '../modules/users/dto/update-user.dto';
+import {
+  ResponseUserDtoItem,
+  ResponseUserDtoList,
+  ResponseUserDtoNull,
+} from '../modules/users/dto/response-user.dto';
 
 @Controller('api/users')
+@ApiTags('Users')
 @UseFilters(new HttpExceptionFilter())
 export class ApiController {
   constructor(private readonly usersModule: UsersService) {}
 
   @Post()
-  async createUser(
-    @Body()
-    data: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      password: string;
-    },
-  ): Promise<any> {
-    const { firstName, lastName, email, password } = data;
-
+  @ApiOperation({ summary: 'Create User' })
+  @ApiCreatedResponse({
+    description: 'Created',
+    type: ResponseUserDtoItem,
+  })
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<any> {
     return {
-      data: await this.usersModule.createUser({
-        firstName,
-        lastName,
-        email,
-        password,
-      }),
+      data: await this.usersModule.createUser(createUserDto),
       error: null,
     };
   }
 
   @Get()
+  @ApiOperation({ summary: 'Retrieve Users' })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ResponseUserDtoList,
+  })
   async getUsers(): Promise<any> {
     const where = {
       deleted: false,
@@ -54,8 +66,14 @@ export class ApiController {
   }
 
   @Get(`:id`)
+  @ApiOperation({ summary: 'Retrieve User' })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ResponseUserDtoItem,
+  })
+  @ApiNotFoundResponse()
   async getUserById(@Param('id') id: string): Promise<any> {
-    const user = await this.usersModule.getUser({ id });
+    const user = await this.usersModule.getUser(id);
 
     if (!user) throw new NotFoundException('User not found');
     // TODO: Different behaviour if it's an Admin requesting User data
@@ -68,47 +86,46 @@ export class ApiController {
   }
 
   @Patch(`:id`)
+  @ApiOperation({ summary: 'Update User' })
+  @ApiOkResponse({
+    description: 'OK',
+    type: ResponseUserDtoItem,
+  })
+  @ApiNotFoundResponse()
   async updateUser(
     @Param('id') id: string,
-    @Body()
-    data: {
-      firstName?: string;
-      lastName?: string;
-      email?: string;
-      password?: string;
-    },
+    @Body() updateUserDto: UpdateUserDto,
   ): Promise<any> {
     return {
-      data: await this.usersModule.updateUser({ id, data }),
+      data: await this.usersModule.updateUser(id, updateUserDto),
       error: null,
     };
   }
 
   @Delete(`:id`)
-  @HttpCode(204)
+  @HttpCode(200)
+  @ApiOperation({ summary: 'Delete User' })
+  @ApiNoContentResponse({
+    description: 'No content',
+    type: ResponseUserDtoNull,
+  })
   async deleteUser(@Param('id') id: string): Promise<any> {
-    const data = {
-      firstName: 'DELETED',
-      lastName: 'DELETED',
-      email: `${id}@DELETED.COM`,
-      deleted: true,
-    };
-
-    await this.usersModule.updateUser({ id, data });
+    await this.usersModule.deleteUser(id);
 
     return {
-      data: null,
+      data: {},
       error: null,
     };
   }
 
   @Delete(``)
-  @HttpCode(204)
+  @HttpCode(200)
+  @ApiExcludeEndpoint()
   async deleteUsers(): Promise<any> {
     await this.usersModule.clearDeletedUsers();
 
     return {
-      data: null,
+      data: [],
       error: null,
     };
   }

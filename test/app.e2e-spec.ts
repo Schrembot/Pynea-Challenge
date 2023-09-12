@@ -215,12 +215,15 @@ describe('AppController (e2e)', () => {
   });
 
   // Delete the user
-  it('/api/users/:id (DELETE) [204: Remove this user]', () => {
+  it('/api/users/:id (DELETE) [200: Remove this user]', () => {
     return request(app.getHttpServer())
       .delete(`/api/users/${new_user_id}`)
-      .expect(204)
+      .expect(200)
       .then((res) => {
-        expect(res.body).toEqual({});
+        expect(res.body).toHaveProperty('data');
+        expect(res.body.data).toEqual({});
+        expect(res.body).toHaveProperty('error');
+        expect(res.body.error).toBe(null);
       });
   });
 
@@ -252,12 +255,15 @@ describe('AppController (e2e)', () => {
   });
 
   // Clear all deleted users
-  it('/api/users (DELETE) [204: Reset table]', () => {
+  it('/api/users (DELETE) [200: Reset table]', () => {
     return request(app.getHttpServer())
       .delete('/api/users')
-      .expect(204)
+      .expect(200)
       .then((res) => {
-        expect(res.body).toEqual({});
+        expect(res.body).toHaveProperty('data');
+        expect(res.body.data).toEqual([]);
+        expect(res.body).toHaveProperty('error');
+        expect(res.body.error).toBe(null);
       });
   });
 });

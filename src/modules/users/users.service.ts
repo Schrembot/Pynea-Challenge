@@ -6,21 +6,19 @@ import {
 import { UsersRepository } from './users.repository';
 import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private repository: UsersRepository) {}
 
-  async createUser(params: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    password: string;
-  }): Promise<any> {
-    const { firstName, lastName, email, password } = params;
+  async createUser(createUserDto: CreateUserDto): Promise<any> {
+    const { firstName, lastName, email, password } = createUserDto;
 
-    if (!password)
+    if (!password) {
       throw new BadRequestException('Argument `password` is missing.');
+    }
 
     try {
       // Try constructing the password
@@ -56,12 +54,7 @@ export class UsersService {
     }
   }
 
-  async updateUser(params: {
-    id: string;
-    data: Prisma.UserUpdateInput;
-  }): Promise<any> {
-    const { id, data } = params;
-
+  async updateUser(id: string, data: UpdateUserDto): Promise<any> {
     try {
       // If the password is being updated, hash it
       if (data.password) {
@@ -93,9 +86,7 @@ export class UsersService {
     }
   }
 
-  async getUser(params: { id: string }): Promise<any> {
-    const { id } = params;
-
+  async getUser(id: string): Promise<any> {
     // call repository layer
     const user = await this.repository.getUser({ id });
 
@@ -127,11 +118,21 @@ export class UsersService {
     return users;
   }
 
-  async deleteUser(params: { id: string }): Promise<any> {
-    const { id } = params;
+  async deleteUser(id: string): Promise<any> {
+    // Prepare to anonymise the user
+    // Set the password to anything and hash it to prevent the user from logging in with their ID again
+    const new_password = await bcrypt.genSalt(20);
+
+    const data = {
+      firstName: 'DELETED',
+      lastName: 'DELETED',
+      email: `${id}@DELETED.COM`,
+      password: await bcrypt.hash(new_password as string, 10),
+      deleted: true,
+    };
 
     // call repository layer
-    const user = await this.repository.deleteUser({ id });
+    const user = await this.repository.updateUser({ where: { id }, data });
 
     // do other things in the service layer...
 
