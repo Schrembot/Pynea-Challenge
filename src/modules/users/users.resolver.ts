@@ -9,7 +9,7 @@ export class UsersResolver {
 
   @Query()
   async getUser(@Args('id') id: string) {
-    return this.usersService.getUser(id);
+    return await this.usersService.getUser(id);
   }
 
   @Query()
@@ -23,16 +23,16 @@ export class UsersResolver {
 
   @Mutation()
   async createUser(@Args('data') data: CreateUserDto) {
-    return this.usersService.createUser(data);
+    return await this.usersService.createUser(data);
   }
 
   @Mutation()
   async updateUser(@Args('id') id: string, @Args('data') data: UpdateUserDto) {
-    return this.usersService.updateUser(id, data);
+    return await this.usersService.updateUser(id, data);
   }
 
   @Mutation()
   async deleteUser(@Args('id') id: string) {
-    return this.usersService.deleteUser(id);
+    return await this.usersService.deleteUser(id);
   }
 }

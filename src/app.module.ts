@@ -3,6 +3,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ApiModule } from './api/api.module';
 
 import { GraphQLModule } from '@nestjs/graphql';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 
@@ -16,6 +17,18 @@ import { join } from 'path';
       definitions: {
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
+      },
+      formatError: (
+        formattedError: GraphQLFormattedError,
+        originalError: GraphQLError,
+      ): GraphQLFormattedError => {
+        const graphQLFormattedError: GraphQLFormattedError = {
+          message: originalError?.message,
+          locations: formattedError.locations,
+          path: formattedError.path,
+          extensions: formattedError.extensions,
+        };
+        return graphQLFormattedError;
       },
     }),
   ],

@@ -76,8 +76,6 @@ export class ApiController {
     const user = await this.usersModule.getUser(id);
 
     if (!user) throw new NotFoundException('User not found');
-    // TODO: Different behaviour if it's an Admin requesting User data
-    if (user.deleted) throw new NotFoundException('User not found');
 
     return {
       data: user,

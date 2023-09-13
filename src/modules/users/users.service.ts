@@ -2,12 +2,14 @@ import {
   Injectable,
   ConflictException,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 
 @Injectable()
 export class UsersService {
@@ -54,6 +56,41 @@ export class UsersService {
     }
   }
 
+  async getUser(id: string): Promise<any> {
+    // call repository layer
+    const user: User | null = await this.repository.getUser({ id });
+
+    // do other things in the service layer...
+    if (user?.deleted) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
+
+  async listUsers(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.UserWhereUniqueInput;
+    where?: Prisma.UserWhereInput;
+    orderBy?: Prisma.UserOrderByWithRelationInput;
+  }): Promise<any> {
+    const { skip, take, cursor, where, orderBy } = params;
+
+    // call repository layer
+    const users = await this.repository.listUsers({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+
+    // do other things in the service layer...
+
+    return users;
+  }
+
   async updateUser(id: string, data: UpdateUserDto): Promise<any> {
     try {
       // If the password is being updated, hash it
@@ -84,38 +121,6 @@ export class UsersService {
 
       throw e;
     }
-  }
-
-  async getUser(id: string): Promise<any> {
-    // call repository layer
-    const user = await this.repository.getUser({ id });
-
-    // do other things in the service layer...
-
-    return user;
-  }
-
-  async listUsers(params: {
-    skip?: number;
-    take?: number;
-    cursor?: Prisma.UserWhereUniqueInput;
-    where?: Prisma.UserWhereInput;
-    orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<any> {
-    const { skip, take, cursor, where, orderBy } = params;
-
-    // call repository layer
-    const users = await this.repository.listUsers({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
-
-    // do other things in the service layer...
-
-    return users;
   }
 
   async deleteUser(id: string): Promise<any> {

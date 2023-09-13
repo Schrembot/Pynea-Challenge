@@ -1,11 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './http-exception.filter';
+import { mainConfig } from './main.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new HttpExceptionFilter());
+  mainConfig(app);
 
   const config = new DocumentBuilder()
     .setTitle('Challenge API')
