@@ -10,7 +10,7 @@
     8.  Bonus:
         - [x] Auth
         - [x] Sorting
-        - [ ] Dockerize - Not part of Docker Compose, needs optimising.  Issue with migration to resolve when launching from nothing.
+        - [ ] Dockerize - Needs optimising.
 
 # Details:
 
@@ -46,22 +46,31 @@
 
 ## Local development
 
-// Launch Postgres instance, wait for it to be ready.
-// Logs will state: "LOG: database system is ready to accept connections"
+// Launch API + DB together, auto-migrates and runs after about 60s
 docker compose up -d
+
+# Manually:
+
+    - Launch a Postgres instance on port 5432
+    - ```npm run migrate:dev``` to run migrations
+    - ```npm run start:dev``` for local development
+    - ```npm run test:e2e``` to run end-to-end testing
+
+    - ```npm run start:migrate:dev``` to migrate and launch
+
+# endpoints
+
+http://localhost:3000/api/users
+http://localhost:3000/graphql
+
+# Docs
+
+http://localhost:3000/api/docs
+
+# Testing in docker
 
 // Build API image
 docker build -t pynea-api .
 
 // Launch via docker
 docker run --rm -it --env-file=./.env -e POSTGRES_HOST=host.docker.internal -p 3000:3000 --name=pynea-api pynea-api
-
-// Run tests:
-npm run test:e2e
-
-// View endpoints
-http://localhost:3000/api/users
-http://localhost:3000/graphql
-
-// Docs
-http://localhost:3000/api/docs

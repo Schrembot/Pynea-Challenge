@@ -24,5 +24,33 @@ services:
       timeout: 2s
       retries: 10
 
+  api:
+    container_name: api
+    image: pynea-api
+    restart: unless-stopped
+    build:
+      context: .
+      args:
+        - POSTGRES_HOST=postgres
+        - POSTGRES_PORT=5432
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_DB}
+        - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+
 volumes:
   postgres:
