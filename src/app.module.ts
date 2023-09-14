@@ -5,6 +5,7 @@ import { ApiModule } from './api/api.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { join } from 'path';
 
 @Module({
@@ -31,6 +32,7 @@ import { join } from 'path';
         return graphQLFormattedError;
       },
     }),
+    PrometheusModule.register(),
   ],
   controllers: [],
   providers: [],
