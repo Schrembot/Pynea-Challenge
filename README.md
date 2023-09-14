@@ -221,18 +221,18 @@ The _deleteUser_ mutation is implemented in GQL and a _DELETE /users/:id_ is imp
 
 ## Todos
 
-- **GraphQL documentation**: Unsure of best practice for an OpenAPI equivalent. Online literature suggests the playground and some paid solutions are also available. A static generator is available with [GraphDoc](https://github.com/2fd/graphdoc#readme) but it has not been updated in 2 years.
-- **GraphQL Sorting/Filtering**: Unsure of approach - had to replicate functionality which appears in Nest's types but I'm not clear on how to get the data from the query to the resolver in a practical way. This is the reason the **not** and **mode** operations are not implemented.
-- **Authentication**: would have liked to add the guards and authentication with login/logout with a JWT token and backed by a Redis instance
-- **Authorization**: with the authentication in place, this would enable user access controls and admin accounts. This would ensure a user's data can only be updated that User or a site Admin. This also has implications for listUser queries and what fields can be returned.
-- **Password returned by GraphQL**: GraphQL is currently able to request a user's password in the query call. This is a serious problem and have not got around to solving it.
+- **GraphQL documentation**: Unsure of best practice compared to REST's OpenAPI equivalent. Online literature suggests the playground, but some static generators available but as paid solutions. [GraphDoc](https://github.com/2fd/graphdoc#readme) is open-source but it has not been updated in 2 years.
+- **GraphQL Sorting/Filtering**: Unsure if the approach taken is right - it feels... odd. I've had to replicate functionality which appears in Nest's types but I might be missing a trick on how to get the query inputs into the resolver in a neater way. This is the reason the **not** and **mode** operations are not implemented.
+- **Authentication**: Would have liked to add the guards and authentication with login/logout/password reset with a JWT token and backed by a Redis instance. Passport is the obvious choice. Email verification service would be nice too.
+- **Authorization**: With the authentication in place, this would enable user access controls and admin accounts. This would ensure a user's data can only be updated that User or a site Admin. This also has implications for listUser queries and what fields can be returned.
+- **Password returned by GraphQL**: Queries are able to request a user's password in the query call. This is a serious problem and have not got around to solving it.
 - **Pagination on GraphQL listUsers**: While sorting and filtering is available, pagination is not. A decision should be made for limits, and cursor or skipping approaches.
 - **Sorting, Filtering and Pagination not on REST API**: Not required here but would be good for consistency.
-- **GraphQL error messaging**: Not as developer-friendly as REST API in some cases
+- **GraphQL error messaging**: Not as developer-friendly as REST API in some cases.
 - **Monitoring**: No bespoke charts or alerts set up for the server.
-- **DELETE /api/users**: This undocumented endpoint is designed to hard-delete users flagged soft-delete. This is mainly used in end-to-end tests. The endpoint is hidden from the OpenAPI spec and would ideally be gated behind an admin account authorization / access control.
-- **Monitoring**: Basic out-of-the-box installation, no extra dashboards or alerts set up yet.
-- **HATEOS on responses**: Return the available actions for an object and pass back to clients.
-- **Caching**: Not implemented.
-- **Tests**: Break these up a bit more, remove dependency on Postgres, maybe use sqlite.
+- **DELETE /api/users**: This undocumented endpoint is designed to hard-delete users flagged as soft-deleted. This is mainly used in end-to-end tests. The endpoint is hidden from the OpenAPI spec and would ideally be gated behind an admin access control.
+- **Monitoring**: Basic out-of-the-box installation, no extra dashboards or alerts set up.
+- **HATEOS on responses**: Return the available actions for an object and pass back to clients. This would need an extra _actions_ object on responses to describe what functions are allowed to be performed and the endpoints for them.
+- **Caching strategies**: Not implemented.
+- **Tests**: Would be nice to break these up a bit more, remove dependency on Postgres, maybe use sqlite.
 - **CI**: Not part of a pipeline and tests not included in deployment at present.
