@@ -65,6 +65,7 @@ npm run start:prod
 5. Launch the container: `docker run --rm -it --env-file=./.env -e POSTGRES_HOST=host.docker.internal -p 3000:3000 --name=pynea-api pynea-api`
 
 **Viewing the API**
+
 All approaches will launch on http://localhost:3000 by default
 
 | Feature               | Endpoint                        | Notes                    |
