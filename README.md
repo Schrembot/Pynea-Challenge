@@ -234,3 +234,5 @@ The _deleteUser_ mutation is implemented in GQL and a _DELETE /users/:id_ is imp
 - **Monitoring**: Basic out-of-the-box installation, no extra dashboards or alerts set up yet.
 - **HATEOS on responses**: Return the available actions for an object and pass back to clients.
 - **Caching**: Not implemented.
+- **Tests**: Break these up a bit more, remove dependency on Postgres, maybe use sqlite.
+- **CI**: Not part of a pipeline and tests not included in deployment at present.
