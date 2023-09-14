@@ -29,8 +29,8 @@ export class CreateUserDto {
   @ApiProperty({ example: 'password1234aBcD!', description: `User's password` })
   @IsStrongPassword()
   @IsNotEmpty()
-  @Length(6, 50, {
-    message: 'Password length Must be between 6 and 50 charcters',
+  @Length(8, 50, {
+    message: 'Password length Must be between 8 and 50 charcters',
   })
   password: string;
 }

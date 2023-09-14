@@ -78,6 +78,118 @@ All approaches will launch on http://localhost:3000 by default
 
 Grafana's credentials are set in the `.env` file.
 
+## GraphQL API
+
+#### Creating a User:
+
+```
+mutation CreateUser {
+	createUser(data:{ firstName:"John", lastName:"Appleseed", email:"j.appleseed@gmail.com", password:"31D3!de£3ded"}) {
+	    id
+	    firstName
+	    lastName
+	    email
+	}
+}
+```
+
+- firstName and lastName may not be blank
+- emails must pass IsEmail constraint
+- password must be between 8 and 50 characters long and contain at least 1 lowercase, 1 uppercase, 1 number and 1 symbol to pass the [IsStrongPassword](https://www.npmjs.com/package/validator) constraint
+
+#### Retrieving a User:
+
+```
+{
+	getUser(id: "8c7390c8-9069-44a9-ad12-55acb1efa0f3") {
+		id
+		firstName
+		lastName
+		email
+		password
+	}
+}
+```
+
+- The User's ID is required to perform the query, which is available from getUser and listUsers queries.
+
+#### Listing Users:
+
+```
+{
+	listUsers {
+		id
+		firstName
+		lastName
+		email
+	}
+}
+
+# Example with sorting on firstName and filtering emails ending in @gmail.com:
+{
+	listUsers (sort:{firstName:desc} where:{email:{endsWith:"@gmail.com"}}) {
+		firstName
+	}
+}
+```
+
+**Sorting**
+Sorting can arrange items by one or more fields in ascending or descending order.
+
+- Fields: **firstName**, **lastName**, **email**
+- Order: **asc** or **desc**
+
+**Filtering**
+Filtering is based on one or more fields by with a comparison operation:
+
+- Fields: **firstName**, **lastName**, **email**
+- Operation and Value: one the following keywords to compare the value to:
+
+| Operation  | Description                   | Value type      |
+| ---------- | ----------------------------- | --------------- |
+| equals     | strict equality               | String          |
+| lt         | less than                     | String          |
+| lte        | less or equal to              | String          |
+| gt         | greather than                 | String          |
+| gte        | greater or equal to           | String          |
+| contains   | does field contain value      | String          |
+| startsWith | does field begin with value   | String          |
+| endsWith   | does field end with value     | String          |
+| in         | is field included in list     | Array\<String\> |
+| notIn      | is field not included in list | Array\<String\> |
+
+#### Updating a User:
+
+```
+mutation UpdateUser {
+	updateUser(id:"0ae72de6-f313-4f30-bd03-56e16715606f", data:{ firstName:"Jane", lastName:"Doe"}) {
+		id
+		firstName
+		lastName
+		email
+	}
+}
+```
+
+- The User's ID is required to perform the update, which is available from getUser and listUsers queries.
+- The data object can update **firstName**, **lastName**, **email** and **password** fields only.
+- Fields are subject to the same constraints as the **CreateUser** mutation
+
+#### Deleting a User:
+
+```
+mutation DeleteUser {
+	deleteUser(id:"0ae72de6-f313-4f30-bd03-56e16715606f"}) {
+		id
+		firstName
+		lastName
+	}
+}
+```
+
+- The User's ID is required to perform the deletion, which is available from getUser and listUsers queries.
+- Users are soft-deleted and their details anonymised. See the _Deleting Users_ section below for details.
+
 ## Testing
 
 End-to-end tests all GraphQL operations and REST endpoints for a range of expected responses and error states. A Postgres database is required prior to launching the end-to-end test.
@@ -109,13 +221,16 @@ The _deleteUser_ mutation is implemented in GQL and a _DELETE /users/:id_ is imp
 
 ## Todos
 
+- **GraphQL documentation**: Unsure of best practice for an OpenAPI equivalent. Online literature suggests the playground and some paid solutions are also available. A static generator is available with [GraphDoc](https://github.com/2fd/graphdoc#readme) but it has not been updated in 2 years.
+- **GraphQL Sorting/Filtering**: Unsure of approach - had to replicate functionality which appears in Nest's types but I'm not clear on how to get the data from the query to the resolver in a practical way. This is the reason the **not** and **mode** operations are not implemented.
 - **Authentication**: would have liked to add the guards and authentication with login/logout with a JWT token and backed by a Redis instance
 - **Authorization**: with the authentication in place, this would enable user access controls and admin accounts. This would ensure a user's data can only be updated that User or a site Admin. This also has implications for listUser queries and what fields can be returned.
 - **Password returned by GraphQL**: GraphQL is currently able to request a user's password in the query call. This is a serious problem and have not got around to solving it.
 - **Pagination on GraphQL listUsers**: While sorting and filtering is available, pagination is not. A decision should be made for limits, and cursor or skipping approaches.
-- **Sorting, Filtering and Pagination not on REST API**: Not required here but would be good for consistency and for the 2 APIs to be in consistent.
+- **Sorting, Filtering and Pagination not on REST API**: Not required here but would be good for consistency.
 - **GraphQL error messaging**: Not as developer-friendly as REST API in some cases
 - **Monitoring**: No bespoke charts or alerts set up for the server.
 - **DELETE /api/users**: This undocumented endpoint is designed to hard-delete users flagged soft-delete. This is mainly used in end-to-end tests. The endpoint is hidden from the OpenAPI spec and would ideally be gated behind an admin account authorization / access control.
 - **Monitoring**: Basic out-of-the-box installation, no extra dashboards or alerts set up yet.
 - **HATEOS on responses**: Return the available actions for an object and pass back to clients.
+- **Caching**: Not implemented.

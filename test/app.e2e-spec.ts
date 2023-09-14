@@ -91,7 +91,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.data).toBeNull();
         expect(res.body).toHaveProperty('error');
         expect(res.body.error).toBe(
-          'Password length Must be between 6 and 50 charcters\nPassword is not strong enough',
+          'Password length Must be between 8 and 50 charcters\nPassword is not strong enough',
         );
       });
   });
@@ -113,7 +113,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.data).toBeNull();
         expect(res.body).toHaveProperty('error');
         expect(res.body.error).toBe(
-          'Password length Must be between 6 and 50 charcters',
+          'Password length Must be between 8 and 50 charcters',
         );
       });
   });
@@ -172,7 +172,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.data).toBeNull();
         expect(res.body).toHaveProperty('error');
         expect(res.body.error).toBe(
-          'Password length Must be between 6 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
+          'Password length Must be between 8 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
         );
       });
   });
@@ -191,7 +191,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.data).toBeNull();
         expect(res.body).toHaveProperty('error');
         expect(res.body.error).toBe(
-          'Email must be an email\nEmail should not be empty\nPassword length Must be between 6 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
+          'Email must be an email\nEmail should not be empty\nPassword length Must be between 8 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
         );
       });
   });
@@ -207,7 +207,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.data).toBeNull();
         expect(res.body).toHaveProperty('error');
         expect(res.body.error).toBe(
-          'FirstName must be a string\nFirstName should not be empty\nLastName must be a string\nLastName should not be empty\nEmail must be an email\nEmail should not be empty\nPassword length Must be between 6 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
+          'FirstName must be a string\nFirstName should not be empty\nLastName must be a string\nLastName should not be empty\nEmail must be an email\nEmail should not be empty\nPassword length Must be between 8 and 50 charcters\nPassword should not be empty\nPassword is not strong enough',
         );
       });
   });
@@ -496,7 +496,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.errors).toBeInstanceOf(Array);
         expect(res.body.errors[0]).toHaveProperty('message');
         expect(res.body.errors[0].message).toBe(
-          'Password length Must be between 6 and 50 charcters\nPassword is not strong enough',
+          'Password length Must be between 8 and 50 charcters\nPassword is not strong enough',
         );
       });
   });
@@ -521,7 +521,7 @@ describe('AppController (e2e)', () => {
         expect(res.body.errors).toBeInstanceOf(Array);
         expect(res.body.errors[0]).toHaveProperty('message');
         expect(res.body.errors[0].message).toBe(
-          'Password length Must be between 6 and 50 charcters',
+          'Password length Must be between 8 and 50 charcters',
         );
       });
   });
