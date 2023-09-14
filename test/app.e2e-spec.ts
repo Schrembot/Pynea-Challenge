@@ -17,10 +17,13 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
+  type User = {
+    id: string;
+  };
   const graphql_endpoint = '/graphql';
   let new_user_id: string = '';
+  let new_users_list: Array<User> = [];
 
-  /*
   // First run should have an empty array of users as the DB should be clean
   it('/api/users (GET) [200: Empty list]', async () => {
     return await request(app.getHttpServer())
@@ -403,7 +406,7 @@ describe('AppController (e2e)', () => {
   //
 
   // First run should have an empty array of users as the DB should be clean
-  it(`${graphql_endpoint} (getUsers Query) []`, () => {
+  it(`${graphql_endpoint} (getUsers Query) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -426,7 +429,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to invalid email
-  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for email]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for email]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -449,7 +452,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to weak password
-  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for email]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for email]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -474,7 +477,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to short password
-  it(`${graphql_endpoint} (createUser Mutation) [Password is too short (and weak)]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Password is too short (and weak)]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -499,7 +502,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to long password
-  it(`${graphql_endpoint} (createUser Mutation) [Password is too long]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Password is too long]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -524,7 +527,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to firstName being an int
-  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for name]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Invalid value given for name]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -549,7 +552,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to missing email
-  it(`${graphql_endpoint} (createUser Mutation) [Missing email]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Missing email]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -574,7 +577,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to missing password
-  it(`${graphql_endpoint} (createUser Mutation) [Missing password]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Missing password]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -599,7 +602,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to missing email and password
-  it(`${graphql_endpoint} (createUser Mutation) [Missing email and password]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Missing email and password]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -628,7 +631,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fail to register a user due to all missing fields
-  it(`${graphql_endpoint} (createUser Mutation) [Missing data]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Missing data]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -665,7 +668,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Register a user
-  it(`${graphql_endpoint} (createUser Mutation) []`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -698,7 +701,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Register the same user again, expect this to fail
-  it(`${graphql_endpoint} (createUser Mutation) [Email already registered]`, () => {
+  it(`${graphql_endpoint} (createUser Mutation) [Email already registered]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -721,7 +724,7 @@ describe('AppController (e2e)', () => {
   });
 
   // List users again, it should have users
-  it(`${graphql_endpoint} (getUsers Query) []`, () => {
+  it(`${graphql_endpoint} (getUsers Query) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -751,7 +754,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Fetch the newly created user
-  it(`${graphql_endpoint} (getUser Query) []`, () => {
+  it(`${graphql_endpoint} (getUser Query) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -780,7 +783,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Find non-existant user
-  it(`${graphql_endpoint} (getUser Query) [User not found]`, () => {
+  it(`${graphql_endpoint} (getUser Query) [User not found]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -801,7 +804,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Update the user
-  it(`${graphql_endpoint} (updateUser Mutation) []`, () => {
+  it(`${graphql_endpoint} (updateUser Mutation) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -833,7 +836,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Delete the user
-  it(`${graphql_endpoint} (deleteUser Mutation) []`, () => {
+  it(`${graphql_endpoint} (deleteUser Mutation) []`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -865,7 +868,7 @@ describe('AppController (e2e)', () => {
   });
 
   // Find deleted user
-  it(`${graphql_endpoint} (getUser Query) [Do not find deleted Users]`, () => {
+  it(`${graphql_endpoint} (getUser Query) [Do not find deleted Users]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -886,7 +889,7 @@ describe('AppController (e2e)', () => {
   });
 
   // List users again, but ensure deleted users are excluded
-  it(`${graphql_endpoint} (getUsers Query) [Ensure deleted users not listed]`, () => {
+  it(`${graphql_endpoint} (getUsers Query) [Ensure deleted users not listed]`, async () => {
     return await request(app.getHttpServer())
       .post(graphql_endpoint)
       .send({
@@ -907,7 +910,6 @@ describe('AppController (e2e)', () => {
         expect(res.body.data.listUsers.length).toEqual(0);
       });
   });
-  */
 
   // Clear all deleted users
   it('/api/users (DELETE) [200: Reset table]', async () => {
@@ -980,13 +982,14 @@ describe('AppController (e2e)', () => {
       .send({
         query: `{
           listUsers {
-            firstName
+            id
           }
         }`,
       })
       .expect(200)
       .then((res) => {
-        expect(res.body.data.listUsers.length).toEqual(4);
+        new_users_list = res.body.data.listUsers;
+        expect(new_users_list.length).toEqual(4);
       });
   });
 
@@ -1078,16 +1081,33 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  // // Clear all deleted users
-  // it('/api/users (DELETE) [200: Reset table]', async () => {
-  //   return await request(app.getHttpServer())
-  //     .delete('/api/users')
-  //     .expect(200)
-  //     .then((res) => {
-  //       expect(res.body).toHaveProperty('data');
-  //       expect(res.body.data).toEqual([]);
-  //       expect(res.body).toHaveProperty('error');
-  //       expect(res.body.error).toBe(null);
-  //     });
-  // });
+  // Filter users on email, sort by name DESC
+  it(`${graphql_endpoint} (deleteUser [x4]`, async () => {
+    for (let i = 0; i < new_users_list.length; i++) {
+      await request(app.getHttpServer())
+        .post(graphql_endpoint)
+        .send({
+          query: `mutation DeleteUser {
+              deleteUser(id:"${new_users_list[i].id}") {
+                id
+              }
+            }`,
+        })
+        .expect(200);
+    }
+    expect(true).toBe(true);
+  });
+
+  // Clear all deleted users
+  it('/api/users (DELETE) [200: Reset table]', async () => {
+    return await request(app.getHttpServer())
+      .delete('/api/users')
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toHaveProperty('data');
+        expect(res.body.data).toEqual([]);
+        expect(res.body).toHaveProperty('error');
+        expect(res.body.error).toBe(null);
+      });
+  });
 });
