@@ -8,6 +8,37 @@
 /* tslint:disable */
 /* eslint-disable */
 
+export enum SortOrder {
+    asc = "asc",
+    desc = "desc"
+}
+
+export class Sort {
+    firstName?: Nullable<SortOrder>;
+    lastName?: Nullable<SortOrder>;
+    email?: Nullable<SortOrder>;
+    createdAt?: Nullable<SortOrder>;
+}
+
+export class Filter {
+    equals?: Nullable<string>;
+    in?: Nullable<Nullable<string>[]>;
+    notIn?: Nullable<Nullable<string>[]>;
+    lt?: Nullable<string>;
+    lte?: Nullable<string>;
+    gt?: Nullable<string>;
+    gte?: Nullable<string>;
+    contains?: Nullable<string>;
+    startsWith?: Nullable<string>;
+    endsWith?: Nullable<string>;
+}
+
+export class Where {
+    firstName?: Nullable<Filter>;
+    lastName?: Nullable<Filter>;
+    email?: Nullable<Filter>;
+}
+
 export class NewUser {
     firstName: string;
     lastName: string;
@@ -36,7 +67,7 @@ export class User {
 export abstract class IQuery {
     abstract getUser(id: string): Nullable<User> | Promise<Nullable<User>>;
 
-    abstract listUsers(): User[] | Promise<User[]>;
+    abstract listUsers(sort?: Nullable<Sort[]>, where?: Nullable<Where[]>): User[] | Promise<User[]>;
 }
 
 export abstract class IMutation {

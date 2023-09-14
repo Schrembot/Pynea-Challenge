@@ -13,12 +13,14 @@ export class UsersResolver {
   }
 
   @Query()
-  async listUsers() {
-    const where = {
-      deleted: false,
-    };
-
-    return this.usersService.listUsers({ where });
+  async listUsers(
+    @Args('sort') sort: Object,
+    @Args('where') where: Array<Object>,
+  ) {
+    let filter = JSON.parse(
+      JSON.stringify({ ...(where ? where[0] : {}), deleted: false }),
+    );
+    return this.usersService.listUsers({ where: filter, orderBy: sort });
   }
 
   @Mutation()

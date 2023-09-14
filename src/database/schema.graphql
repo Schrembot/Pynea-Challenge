@@ -1,3 +1,31 @@
+enum SortOrder {
+  asc
+  desc
+}
+input Sort {
+  firstName: SortOrder
+  lastName: SortOrder
+  email: SortOrder
+  createdAt: SortOrder
+}
+input Filter {
+  equals: String
+  in: [String]
+  notIn: [String]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+}
+input Where {
+  firstName: Filter
+  lastName: Filter
+  email: Filter
+}
+
 type User {
   id: ID!
   firstName: String!
@@ -25,7 +53,7 @@ input UpdateUser {
 
 type Query {
   getUser(id: ID!): User
-  listUsers: [User!]!
+  listUsers(sort: [Sort!], where: [Where!]): [User!]!
 }
 
 type Mutation {
