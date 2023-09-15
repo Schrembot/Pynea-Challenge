@@ -236,3 +236,4 @@ The _deleteUser_ mutation is implemented in GQL and a _DELETE /users/:id_ is imp
 - **Caching strategies**: Not implemented.
 - **Tests**: Would be nice to break these up a bit more, remove dependency on Postgres, maybe use sqlite.
 - **CD**: No pipeline defined.
+- **Not Production**: NODE_ENV is not set to production in Dockerfile for demo purposes
