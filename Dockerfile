@@ -15,7 +15,6 @@ COPY --chown=node:node --from=build /app/. .
 RUN npm install --omit=dev --force
 COPY --chown=node:node --from=build /app/node_modules/.prisma/client  ./node_modules/.prisma/client
 
-ENV NODE_ENV production
 ARG DATABASE_URL
 EXPOSE 3000
 CMD ["npm", "run", "start:migrate:prod"]
